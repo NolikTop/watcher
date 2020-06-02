@@ -4,22 +4,28 @@ package main
 type RawConfigStruct struct {
 	VKToken  *string            `json:"vk_token"`
 	VKChatId *int               `json:"vk_chat_id"`
+	Time     *int               `json:"time"`
 	Servers  []*RawConfigServer `json:"servers"`
 }
 
 type ConfigStruct struct {
-	VKToken  string          `json:"vk_token"`
-	VKChatId int             `json:"vk_chat_id"`
-	Servers  []*ConfigServer `json:"servers"`
+	VKToken  string
+	VKChatId int
+	Time     int
+	Servers  []*ConfigServer
 }
 
 // Существует только для проверки на наличие required полей в конфиге
 type RawConfigServer struct {
-	Addr     *string `json:"addr"`
-	Protocol *string `json:"protocol"`
+	Name         *string `json:"name"`
+	Addr         *string `json:"addr"`
+	Protocol     *string `json:"protocol"`
+	MentionsText *string `json:"mentions_text"`
 }
 
 type ConfigServer struct {
-	Addr     string `json:"addr"`
-	Protocol string `json:"protocol"`
+	Name         string
+	Addr         string
+	Protocol     string
+	MentionsText string
 }
