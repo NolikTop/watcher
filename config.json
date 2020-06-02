@@ -1,0 +1,10 @@
+{
+  "vk_token": "token",
+  "vk_chat_id": 1,
+  "servers": [
+    {
+      "Addr": "127.0.0.1:8080",
+      "Protocol": "tcp"
+    }
+  ]
+}
