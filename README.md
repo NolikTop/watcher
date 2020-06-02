@@ -6,13 +6,13 @@ Watcher следит за указанными ему tcp/udp серверами
 
 ```shell script
 go get github.com/GreenWix/watcher
-go build -o main
+go build -o watcher
 ```
 
 ## Запуск
 
 ```shell script
-./main config=/абсолютный/путь/до/конфига.json
+./watcher config=/абсолютный/путь/до/конфига.json
 ```
 
 ## TODO список
