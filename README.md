@@ -12,7 +12,7 @@ go build -o watcher
 ## Запуск
 
 ```shell script
-./watcher config=/абсолютный/путь/до/конфига.json
+./watcher -config=путь/до/конфига.json
 ```
 
 ## TODO список
