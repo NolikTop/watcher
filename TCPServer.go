@@ -7,7 +7,12 @@ type TCPServer struct {
 }
 
 func (server *TCPServer) checkConnection() (err error) {
-	_, err = net.Dial("tcp", server.Addr)
+	conn, err := net.Dial("tcp", server.Addr)
+	if err != nil {
+		return
+	}
+
+	err = conn.Close()
 	if err != nil {
 		return
 	}

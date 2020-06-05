@@ -8,6 +8,7 @@
 *.dylib
 
 main
+watcher
 
 # Test binary, built with `go test -c`
 *.test
