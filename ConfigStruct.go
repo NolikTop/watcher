@@ -17,15 +17,17 @@ type ConfigStruct struct {
 
 // Существует только для проверки на наличие required полей в конфиге
 type RawConfigServer struct {
-	Name         *string `json:"name"`
-	Addr         *string `json:"addr"`
-	Protocol     *string `json:"protocol"`
-	MentionsText *string `json:"mentions_text"`
+	Name             *string `json:"name"`
+	Addr             *string `json:"addr"`
+	Protocol         *string `json:"protocol"`
+	MentionsText     *string `json:"mentions_text"`
+	StartBytesBase64 *string `json:"start_bytes_base64"`
 }
 
 type ConfigServer struct {
-	Name         string
-	Addr         string
-	Protocol     string
-	MentionsText string
+	Name             string
+	Addr             string
+	Protocol         string
+	MentionsText     string
+	StartBytesBase64 string
 }

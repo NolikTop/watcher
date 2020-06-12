@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
@@ -17,8 +18,12 @@ func main() {
 
 	for _, server := range config.Servers {
 		if server.Protocol == "udp" {
-			panic("not implemented yet")
-			typedServer = &UDPServer{&ServerBase{}}
+			startBytes, err := base64.StdEncoding.DecodeString(server.StartBytesBase64)
+			if err != nil {
+				panic("Couldn't decode \"start_bytes_base64\" from server \"" + server.Name + "\"")
+			}
+
+			typedServer = &UDPServer{&ServerBase{}, startBytes, nil, nil}
 		} else {
 			typedServer = &TCPServer{&ServerBase{}}
 		}
@@ -86,11 +91,16 @@ func parseConfig(configPath string) *ConfigStruct {
 			panic("Server #" + strconv.Itoa(id) + " has wrong \"protocol\" field. It can be only \"udp\" or \"tcp\"")
 		}
 
+		if *server.Protocol == "udp" && server.StartBytesBase64 == nil {
+			panic("Server #" + strconv.Itoa(id) + " hasn't \"start_bytes_base64\" field")
+		}
+
 		servers[id] = &ConfigServer{
-			Name:         *server.Name,
-			Addr:         *server.Addr,
-			Protocol:     *server.Protocol,
-			MentionsText: *server.MentionsText,
+			Name:             *server.Name,
+			Addr:             *server.Addr,
+			Protocol:         *server.Protocol,
+			MentionsText:     *server.MentionsText,
+			StartBytesBase64: *server.StartBytesBase64,
 		}
 	}
 

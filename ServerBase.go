@@ -41,7 +41,7 @@ func (server *ServerBase) init(name, addr, mentionsText string) {
 
 func (server *ServerBase) incrementOffTime() {
 	server.OffTime++
-	if server.OffTime&0b111 == 0b111 && rand.Intn(4) == 1 {
+	if server.OffTime&0b111 == 0b111 && (server.OffTime < 30 || rand.Intn(4) == 1) {
 		sendBadNotification(server.Name, server.Addr, server.MentionsText, server.OffTime)
 	}
 }

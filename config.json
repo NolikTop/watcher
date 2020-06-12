@@ -8,6 +8,13 @@
       "addr": "127.0.0.1:8080",
       "protocol": "tcp",
       "mentions_text": "@all"
+    },
+    {
+      "name": "my udp server",
+      "addr": "127.0.0.1:1234",
+      "protocol": "udp",
+      "start_bytes_base64": "c29tZSBieXRlcw==",
+      "mentions_text": "@online"
     }
   ]
 }
