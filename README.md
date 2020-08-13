@@ -2,6 +2,10 @@
 
 Watcher следит за указанными ему tcp/udp серверами, и если какие-то из серверов прекратили работу, watcher предупредит Вас об этом в ВКонтакте
 
+![watcher works](https://sun1-95.userapi.com/EeKVmoN8KkpstL0xCDJ0iHr68BjGaOVoFSvI1Q/rRLlzTQUsOA.jpg)
+
+---
+
 ## Установка
 
 ```shell script
@@ -14,6 +18,8 @@ go build -o watcher
 ```shell script
 ./watcher -config=путь/до/конфига.json
 ```
+
+---
 
 ## Конфиг
 
@@ -50,10 +56,10 @@ start_bytes_base64 (только UDP) | Base64 байтов, после отпр
       "mentions_text": "@all"
     },
     {
-      "name": "my udp server",
-      "addr": "127.0.0.1:1234",
+      "name": "my minecraft pocket edition (udp) server using open connection request1 packet",
+      "addr": "127.0.0.1:19132",
       "protocol": "udp",
-      "start_bytes_base64": "c29tZSBieXRlcw==",
+      "start_bytes_base64": "BQD//wD+/v7+/f39/RI0VngKAA==",
       "mentions_text": "@online"
     }
   ]
