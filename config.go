@@ -98,12 +98,21 @@ func parseConfig(configPath string) *ConfigStruct {
 			panic("Server #" + strconv.Itoa(id) + " hasn't \"start_bytes_base64\" field")
 		}
 
-		servers[id] = &ConfigServer{
-			Name:             *server.Name,
-			Addr:             *server.Addr,
-			Protocol:         *server.Protocol,
-			MentionsText:     *server.MentionsText,
-			StartBytesBase64: *server.StartBytesBase64,
+		if *server.Protocol == "udp" {
+			servers[id] = &ConfigServer{
+				Name:             *server.Name,
+				Addr:             *server.Addr,
+				Protocol:         *server.Protocol,
+				MentionsText:     *server.MentionsText,
+				StartBytesBase64: *server.StartBytesBase64,
+			}
+		} else {
+			servers[id] = &ConfigServer{
+				Name:         *server.Name,
+				Addr:         *server.Addr,
+				Protocol:     *server.Protocol,
+				MentionsText: *server.MentionsText,
+			}
 		}
 	}
 
