@@ -12,14 +12,14 @@ func watch(server Server, timeout int) {
 		if server.isWorking() {
 			if err != nil {
 				server.setWorking(false)
-				log.Error("Server ", server.getName(), " not working")
+				log.Error("Server " + server.getName() + " not working")
 				sendErrorNotification(server.getName(), server.getAddr(), server.getMentionsText(), err)
 			}
 			time.Sleep(time.Duration(timeout) * time.Second)
 		} else {
 			if err == nil {
 				server.setWorking(true)
-				log.Error("Server ", server.getName(), " is working again")
+				log.Error("Server " + server.getName() + " is working again")
 				sendOkNotification(server.getName(), server.getAddr())
 			} else {
 				server.incrementOffTime()
