@@ -8,8 +8,11 @@ Watcher следит за указанными ему tcp/udp серверами
 
 ## Установка
 
+Для нормальной работы Watcher рекомендуется иметь версию Go 1.14 или выше
+
 ```shell script
 go get github.com/GreenWix/watcher
+cd $GOPATH/src/github.com/GreenWix/watcher
 go build -o watcher
 ```
 
