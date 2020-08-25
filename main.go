@@ -14,15 +14,20 @@ func main() {
 	var typedServer Server
 
 	for _, server := range config.Servers {
-		if server.Protocol == "udp" {
+		switch server.Protocol {
+		case "udp":
 			startBytes, err := base64.StdEncoding.DecodeString(server.StartBytesBase64)
 			if err != nil {
 				panic("Couldn't decode \"start_bytes_base64\" from server \"" + server.Name + "\"")
 			}
 
 			typedServer = &UDPServer{&ServerBase{}, startBytes, nil, nil}
-		} else {
+		case "tcp":
 			typedServer = &TCPServer{&ServerBase{}}
+		case "minecraft":
+			fallthrough
+		default:
+			typedServer = &MinecraftServer{&ServerBase{}, nil, nil}
 		}
 
 		typedServer.init(server.Name, server.Addr, server.MentionsText)

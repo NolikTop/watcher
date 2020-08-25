@@ -90,8 +90,8 @@ func parseConfig(configPath string) *ConfigStruct {
 			panic("Server #" + strconv.Itoa(id) + " hasn't \"mentions_text\" field")
 		}
 
-		if *server.Protocol != "udp" && *server.Protocol != "tcp" {
-			panic("Server #" + strconv.Itoa(id) + " has wrong \"protocol\" field. It can be only \"udp\" or \"tcp\"")
+		if *server.Protocol != "udp" && *server.Protocol != "tcp" && *server.Protocol != "minecraft" {
+			panic("Server #" + strconv.Itoa(id) + " has wrong \"protocol\" field. It can be only \"udp\", \"tcp\" or \"minecraft\"")
 		}
 
 		if *server.Protocol == "udp" && server.StartBytesBase64 == nil {

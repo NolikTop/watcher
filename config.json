@@ -4,6 +4,12 @@
   "time": 10,
   "servers": [
     {
+      "name": "my minecraft pocket edition or bedrock edition server",
+      "addr": "127.0.0.1:19132",
+      "protocol": "minecraft",
+      "mentions_text": "@online"
+    },
+    {
       "name": "my http server",
       "addr": "127.0.0.1:8080",
       "protocol": "tcp",

@@ -36,7 +36,7 @@ servers | сервера
 ------------ | -------------
 name | имя сервера (нужно для уведомлений, чтобы Вы поняли какой именно сервер упал)
 addr | адрес сервера 
-protocol | tcp/udp. Протокол, используемый сервером
+protocol | tcp/udp/minecraft. Протокол, используемый сервером
 mentions_text | строка, содержащая список упоминаний пользователей, которые ответственны за данный сервер
 start_bytes_base64 (только UDP) | Base64 байтов, после отправки которых watcher должен получить ответ от UDP сервера
 
@@ -50,18 +50,24 @@ start_bytes_base64 (только UDP) | Base64 байтов, после отпр
   "time": 10,
   "servers": [
     {
+      "name": "my minecraft pocket edition or bedrock edition server",
+      "addr": "127.0.0.1:19132",
+      "protocol": "minecraft",
+      "mentions_text": "@online"
+    },
+    {
       "name": "my http server",
       "addr": "127.0.0.1:8080",
       "protocol": "tcp",
       "mentions_text": "@all"
     },
     {
-      "name": "my minecraft pocket edition (udp) server using open connection request1 packet",
+      "name": "my udp server",
       "addr": "127.0.0.1:19132",
       "protocol": "udp",
       "start_bytes_base64": "BQD//wD+/v7+/f39/RI0VngKAA==",
       "mentions_text": "@online"
-    }
+    },
   ]
 }
 ```
