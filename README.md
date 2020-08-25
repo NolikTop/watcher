@@ -70,7 +70,7 @@ start_bytes_base64 (только UDP) | Base64 байтов, после отпр
       "protocol": "udp",
       "start_bytes_base64": "BQD//wD+/v7+/f39/RI0VngKAA==",
       "mentions_text": "@online"
-    },
+    }
   ]
 }
 ```
