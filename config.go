@@ -28,6 +28,8 @@ type RawConfigServer struct {
 	Protocol         *string `json:"protocol"`
 	MentionsText     *string `json:"mentions_text"`
 	StartBytesBase64 *string `json:"start_bytes_base64"`
+	Command          *string `json:"command"`
+	Password         *string `json:"password"`
 }
 
 type ConfigServer struct {
@@ -36,6 +38,8 @@ type ConfigServer struct {
 	Protocol         string
 	MentionsText     string
 	StartBytesBase64 string
+	Command          string
+	Password         string
 }
 
 func parseConfig(configPath string) *ConfigStruct {
@@ -73,47 +77,61 @@ func parseConfig(configPath string) *ConfigStruct {
 
 	servers := make([]*ConfigServer, len(config.Servers))
 
-	for id, server := range config.Servers {
-		if server.Addr == nil {
+	var server *ConfigServer
+
+	for id, iteratingServer := range config.Servers {
+		if iteratingServer.Addr == nil {
 			panic("Server #" + strconv.Itoa(id) + " hasn't \"addr\" field")
 		}
 
-		if server.Protocol == nil {
+		if iteratingServer.Protocol == nil {
 			panic("Server #" + strconv.Itoa(id) + " hasn't \"protocol\" field")
 		}
 
-		if server.Name == nil {
+		if iteratingServer.Name == nil {
 			panic("Server #" + strconv.Itoa(id) + " hasn't \"name\" field")
 		}
 
-		if server.MentionsText == nil {
+		if iteratingServer.MentionsText == nil {
 			panic("Server #" + strconv.Itoa(id) + " hasn't \"mentions_text\" field")
 		}
 
-		if *server.Protocol != "udp" && *server.Protocol != "tcp" && *server.Protocol != "minecraft" {
-			panic("Server #" + strconv.Itoa(id) + " has wrong \"protocol\" field. It can be only \"udp\", \"tcp\" or \"minecraft\"")
+		switch *iteratingServer.Protocol {
+		case "udp":
+			if iteratingServer.StartBytesBase64 == nil {
+				panic("Server #" + strconv.Itoa(id) + " hasn't \"start_bytes_base64\" field")
+			}
+
+			server = &ConfigServer{
+				Name:             *iteratingServer.Name,
+				Addr:             *iteratingServer.Addr,
+				Protocol:         *iteratingServer.Protocol,
+				MentionsText:     *iteratingServer.MentionsText,
+				StartBytesBase64: *iteratingServer.StartBytesBase64,
+			}
+		case "tcp":
+			fallthrough
+		case "minecraft":
+			server = &ConfigServer{
+				Name:         *iteratingServer.Name,
+				Addr:         *iteratingServer.Addr,
+				Protocol:     *iteratingServer.Protocol,
+				MentionsText: *iteratingServer.MentionsText,
+			}
+		case "rcon":
+			server = &ConfigServer{
+				Name:         *iteratingServer.Name,
+				Addr:         *iteratingServer.Addr,
+				Protocol:     *iteratingServer.Protocol,
+				MentionsText: *iteratingServer.MentionsText,
+				Command:      *iteratingServer.Command,
+				Password:     *iteratingServer.Password,
+			}
+		default:
+			panic("Server #" + strconv.Itoa(id) + " has wrong \"protocol\" field. It can be only \"udp\", \"tcp\", \"minecraft\" or \"rcon\"")
 		}
 
-		if *server.Protocol == "udp" && server.StartBytesBase64 == nil {
-			panic("Server #" + strconv.Itoa(id) + " hasn't \"start_bytes_base64\" field")
-		}
-
-		if *server.Protocol == "udp" {
-			servers[id] = &ConfigServer{
-				Name:             *server.Name,
-				Addr:             *server.Addr,
-				Protocol:         *server.Protocol,
-				MentionsText:     *server.MentionsText,
-				StartBytesBase64: *server.StartBytesBase64,
-			}
-		} else {
-			servers[id] = &ConfigServer{
-				Name:         *server.Name,
-				Addr:         *server.Addr,
-				Protocol:     *server.Protocol,
-				MentionsText: *server.MentionsText,
-			}
-		}
+		servers[id] = server
 	}
 
 	return &ConfigStruct{
