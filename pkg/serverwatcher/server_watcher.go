@@ -4,10 +4,21 @@ type ServerWatcher interface {
 	Init(data map[string]interface{}) error
 	CheckConnection() error
 
+	GetName() string
+	GetServerAddr() string
+	GetProtocol() string
+
+	GetChats() []string
+
+	GetTimeout() int
+
+	GetFormattedName() string
+
+	GetMentionsText() string
+
 	SetWorking(working bool)
 	IsWorking() bool
-	GetName() string
-	GetAddr() string
-	GetMentionsText() string
+
 	IncrementOffTime()
+	GetOffTime() uint
 }

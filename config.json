@@ -1,18 +1,42 @@
 {
-  "vk_token": "token",
-  "vk_chat_id": 1,
-  "time": 10,
+  "notification_methods": [
+    {
+      "name": "web",
+      "method": "vk",
+      "data": {
+        "chat_id": 1,
+        "access_token": "abcdef"
+      }
+    },
+    {
+      "name": "minecraft",
+      "method": "vk",
+      "data": {
+        "chat_id": 2,
+        "access_token": "abcdef"
+      }
+    }
+  ],
   "servers": [
     {
       "name": "my minecraft pocket edition or bedrock edition server",
       "addr": "127.0.0.1:19132",
       "protocol": "minecraft",
+      "chats": ["minecraft"],
+      "mentions_text": "@online"
+    },
+    {
+      "name": "my raknet server",
+      "addr": "127.0.0.1:19132",
+      "protocol": "raknet",
+      "chats": ["minecraft"],
       "mentions_text": "@online"
     },
     {
       "name": "my rcon server",
       "addr": "127.0.0.1:19132",
       "protocol": "rcon",
+      "chats": ["minecraft", "web"],
       "mentions_text": "@online",
       "data": {
         "password": "abcdef"
@@ -20,14 +44,23 @@
     },
     {
       "name": "my http server",
-      "addr": "127.0.0.1:8080",
+      "addr": "127.0.0.1:8008",
+      "protocol": "http",
+      "chats": ["web"],
+      "mentions_text": "@all"
+    },
+    {
+      "name": "my tcp server",
+      "addr": "127.0.0.1:3456",
       "protocol": "tcp",
+      "chats": ["web"],
       "mentions_text": "@all"
     },
     {
       "name": "my udp server",
       "addr": "127.0.0.1:1234",
       "protocol": "udp",
+      "chats": ["web"],
       "mentions_text": "@online",
       "data": {
         "send_bytes_base64": "c29tZSBieXRlcw=="

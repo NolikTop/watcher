@@ -24,13 +24,19 @@ func ParseConfig(configPath string) (*Config, error) {
 		return nil, err
 	}
 
+	notificationMethods, err := parseAllNotificationMethods(config)
+	if err != nil {
+		return nil, err
+	}
+
 	servers, err := parseAllServers(config)
+	if err != nil {
+		return nil, err
+	}
 
 	return &Config{
-		VKToken:  *config.VKToken,
-		Time:     *config.Time,
-		VKChatId: *config.VKChatId,
-		Servers:  servers,
+		NotificationMethods: notificationMethods,
+		Servers:             servers,
 	}, nil
 }
 
@@ -50,16 +56,8 @@ func verifyConfigExistsAndGetContents(configPath string) ([]byte, error) {
 }
 
 func verifyAllRequiredFields(config *RawConfig) error {
-	if config.VKToken == nil {
-		return errFieldIsNotProvided("vk_token")
-	}
-
-	if config.VKChatId == nil {
-		return errFieldIsNotProvided("vk_chat_id")
-	}
-
-	if config.Time == nil {
-		return errFieldIsNotProvided("time")
+	if len(config.NotificationMethods) == 0 {
+		return errFieldIsNotProvided("notification_methods")
 	}
 
 	if len(config.Servers) == 0 {
@@ -69,10 +67,59 @@ func verifyAllRequiredFields(config *RawConfig) error {
 	return nil
 }
 
+func parseAllNotificationMethods(config *RawConfig) ([]*NotificationMethodConfig, error) {
+	notificationMethods := make([]*NotificationMethodConfig, len(config.NotificationMethods))
+
+	for id, methodData := range config.NotificationMethods {
+		methodConfig, err := parseNotificationMethod(id, methodData)
+		if err != nil {
+			return nil, err
+		}
+
+		notificationMethods[id] = methodConfig
+	}
+
+	return notificationMethods, nil
+}
+
+func parseNotificationMethod(id int, methodData *RawNotificationMethodConfig) (*NotificationMethodConfig, error) {
+	err := verifyMethodRequiredFields(id, methodData)
+	if err != nil {
+		return nil, err
+	}
+
+	return &NotificationMethodConfig{
+		Name:   *methodData.Name,
+		Method: *methodData.Method,
+		Data:   *methodData.Data,
+	}, nil
+}
+
+func verifyMethodRequiredFields(id int, methodData *RawNotificationMethodConfig) error {
+	if methodData.Name == nil {
+		serverName := "#" + strconv.Itoa(id) // если имя метода не указано, то в ошибке укажем его порядковый номер в конфиге
+		return errMethodHasNotField(serverName, "name")
+	}
+
+	serverName := *methodData.Name
+
+	if methodData.Method == nil {
+		return errServerHasNotField(serverName, "method")
+	}
+
+	if methodData.Data == nil {
+		data := make(map[string]interface{})
+		methodData.Data = &data
+	}
+
+	return nil
+}
+
 func parseAllServers(config *RawConfig) ([]*ServerConfig, error) {
 	servers := make([]*ServerConfig, len(config.Servers))
-	for id, server := range config.Servers {
-		serverConfig, err := parseConfigServer(id, server)
+
+	for id, serverData := range config.Servers {
+		serverConfig, err := parseConfigServer(id, serverData)
 		if err != nil {
 			return nil, err
 		}
@@ -83,55 +130,50 @@ func parseAllServers(config *RawConfig) ([]*ServerConfig, error) {
 	return servers, nil
 }
 
-func parseConfigServer(id int, server *RawServerConfig) (*ServerConfig, error) {
-	err := verifyServerRequiredFields(id, server)
+func parseConfigServer(id int, serverData *RawServerConfig) (*ServerConfig, error) {
+	err := verifyServerRequiredFields(id, serverData)
 	if err != nil {
 		return nil, err
 	}
 
-	var serverData map[string]interface{}
-	if server.Data == nil {
-		serverData = make(map[string]interface{})
-	} else {
-		serverData = *server.Data
-	}
-
 	return &ServerConfig{
-		Name:         *server.Name,
-		Addr:         *server.Addr,
-		Protocol:     *server.Protocol,
-		MentionsText: *server.MentionsText,
-		Data:         serverData,
+		Name:         *serverData.Name,
+		Addr:         *serverData.Addr,
+		Protocol:     *serverData.Protocol,
+		Chats:        *serverData.Chats,
+		MentionsText: *serverData.MentionsText,
+		Data:         *serverData.Data,
 	}, nil
 }
 
-func verifyServerRequiredFields(id int, server *RawServerConfig) error {
-	if server.Name == nil {
+func verifyServerRequiredFields(id int, serverData *RawServerConfig) error {
+	if serverData.Name == nil {
 		serverName := "#" + strconv.Itoa(id) // если имя сервера не указано, то в ошибке укажем его порядковый номер в конфиге
 		return errServerHasNotField(serverName, "name")
 	}
 
-	serverName := *server.Name
+	serverName := *serverData.Name
 
-	if server.Addr == nil {
+	if serverData.Addr == nil {
 		return errServerHasNotField(serverName, "addr")
 	}
 
-	if server.Protocol == nil {
+	if serverData.Protocol == nil {
 		return errServerHasNotField(serverName, "serverwatcher")
 	}
 
-	if server.MentionsText == nil {
+	if serverData.Chats == nil {
+		return errServerHasNotField(serverName, "chats")
+	}
+
+	if serverData.MentionsText == nil {
 		return errServerHasNotField(serverName, "mentions_text")
 	}
 
+	if serverData.Data == nil {
+		data := make(map[string]interface{})
+		serverData.Data = &data
+	}
+
 	return nil
-}
-
-func errFieldIsNotProvided(fieldName string) error {
-	return errors.New("No \"" + fieldName + "\" field provided in config ")
-}
-
-func errServerHasNotField(serverName, fieldName string) error {
-	return errors.New("Server " + serverName + " hasn't \"" + fieldName + "\" field")
 }

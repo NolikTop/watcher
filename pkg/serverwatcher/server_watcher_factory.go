@@ -12,6 +12,7 @@ func newBase(config *config.ServerConfig) *WatcherBase {
 		working:      true,
 		offTime:      0,
 		mentionsText: config.MentionsText,
+		protocol:     config.Protocol,
 	}
 }
 
@@ -27,7 +28,7 @@ func NewServer(config *config.ServerConfig) (ServerWatcher, error) {
 	case "tcp":
 		server = &TcpServerWatcher{WatcherBase: base}
 	case "raknet":
-		server = &RakNetServerWatcher{WatcherBase: base}
+		server = &RaknetServerWatcher{WatcherBase: base}
 	case "minecraft":
 		return nil, errProtocolNotImplemented(protocol)
 	case "rcon":

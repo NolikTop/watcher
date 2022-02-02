@@ -1,44 +1,58 @@
 package serverwatcher
 
-import (
-	"math/rand"
-	"watcher/pkg/notification"
-)
+import "fmt"
 
 type WatcherBase struct {
 	name         string
 	serverAddr   string
+	protocol     string
+	chats        []string
 	working      bool
 	offTime      uint
 	mentionsText string
 }
 
-func (watcher *WatcherBase) SetWorking(working bool) {
-	watcher.offTime = 0
-	watcher.working = working
+func (w *WatcherBase) SetWorking(working bool) {
+	w.offTime = 0
+	w.working = working
 }
 
-func (watcher *WatcherBase) IsWorking() bool {
-	return watcher.working
+func (w *WatcherBase) IsWorking() bool {
+	return w.working
 }
 
-func (watcher *WatcherBase) GetName() string {
-	return watcher.name
+func (w *WatcherBase) GetName() string {
+	return w.name
 }
 
-func (watcher *WatcherBase) GetAddr() string {
-	return watcher.serverAddr
+func (w *WatcherBase) GetServerAddr() string {
+	return w.serverAddr
 }
 
-func (watcher *WatcherBase) GetMentionsText() string {
-	return watcher.mentionsText
+func (w *WatcherBase) GetProtocol() string {
+	return w.protocol
 }
 
-func (watcher *WatcherBase) IncrementOffTime() {
-	watcher.offTime++
+func (w *WatcherBase) GetChats() []string {
+	return w.chats
+}
 
-	// todo внизу происходит что-то странное, надо здесь больше ясности внести
-	if watcher.offTime&0b111 == 0b111 && (watcher.offTime < 30 || rand.Intn(4) == 1) {
-		notification.SendBadNotification(watcher.name, watcher.serverAddr, watcher.mentionsText, watcher.offTime)
-	}
+func (w *WatcherBase) GetTimeout() int {
+	return 10 // todo
+}
+
+func (w *WatcherBase) GetFormattedName() string {
+	return fmt.Sprintf("%s (%s)", w.GetName(), w.GetProtocol())
+}
+
+func (w *WatcherBase) GetMentionsText() string {
+	return w.mentionsText
+}
+
+func (w *WatcherBase) IncrementOffTime() {
+	w.offTime++
+}
+
+func (w *WatcherBase) GetOffTime() uint {
+	return w.offTime
 }

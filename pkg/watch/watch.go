@@ -1,41 +1,51 @@
 package watch
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
+	"math/rand"
 	"time"
 	"watcher/pkg/notification"
-	"watcher/pkg/server"
+	"watcher/pkg/serverwatcher"
 )
 
-func Watch(server server_watcher.ServerWatcher, timeout int) {
+func Watch(watcher serverwatcher.ServerWatcher) {
+	timeout := watcher.GetTimeout()
 	var err error
 	for {
-		err = server.CheckConnection()
+		err = watcher.CheckConnection()
 
-		if server.IsWorking() {
+		if watcher.IsWorking() {
 			if err != nil {
-				serverWentDown(server, err)
+				serverWentDown(watcher)
 			}
 			time.Sleep(time.Duration(timeout) * time.Second)
 		} else {
 			if err == nil {
-				serverStartedUp(server)
+				serverStartedUp(watcher)
 			} else {
-				server.IncrementOffTime()
+				watcher.IncrementOffTime()
+				if shouldReportAgain(watcher) {
+					notification.ServerStillIsDown(watcher)
+				}
 			}
 			time.Sleep(time.Duration(1) * time.Second)
 		}
 	}
 }
 
-func serverWentDown(server server_watcher.ServerWatcher, err error) {
-	server.SetWorking(false)
-	fmt.Println("ServerWatcher " + server.GetName() + " not working")
-	notification.SendErrorNotification(server.GetName(), server.GetAddr(), server.GetMentionsText(), err)
+func shouldReportAgain(server serverwatcher.ServerWatcher) bool {
+	// todo эту уникальную формулу явно стоит переделать
+	return server.GetOffTime()&0b111 == 0b111 && (server.GetOffTime() < 30 || rand.Intn(4) == 1)
 }
 
-func serverStartedUp(server server_watcher.ServerWatcher) {
-	server.SetWorking(true)
-	fmt.Println("ServerWatcher " + server.GetName() + " is working again")
-	notification.SendOkNotification(server.GetName(), server.GetAddr())
+func serverWentDown(watcher serverwatcher.ServerWatcher) {
+	watcher.SetWorking(false)
+	log.Info("Server " + watcher.GetFormattedName() + " not working")
+	notification.ServerWentDown(watcher)
+}
+
+func serverStartedUp(watcher serverwatcher.ServerWatcher) {
+	watcher.SetWorking(true)
+	log.Info("Server " + watcher.GetFormattedName() + " is working again")
+	notification.ServerIsUp(watcher)
 }

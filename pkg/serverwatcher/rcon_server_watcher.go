@@ -11,16 +11,16 @@ type RconServerWatcher struct {
 	password string
 }
 
-func (watcher *RconServerWatcher) Init(data map[string]interface{}) error {
+func (w *RconServerWatcher) Init(data map[string]interface{}) error {
 
 	if command, ok := data["command"]; ok {
-		watcher.command = command.(string)
+		w.command = command.(string)
 	} else {
 		return errNoFieldInData("command")
 	}
 
 	if password, ok := data["password"]; ok {
-		watcher.password = password.(string)
+		w.password = password.(string)
 	} else {
 		return errNoFieldInData("password")
 	}
@@ -28,15 +28,15 @@ func (watcher *RconServerWatcher) Init(data map[string]interface{}) error {
 	return nil
 }
 
-func (watcher *RconServerWatcher) CheckConnection() (err error) {
-	if watcher.conn == nil {
-		watcher.conn, err = rcon.NewConnection(watcher.serverAddr, watcher.password)
+func (w *RconServerWatcher) CheckConnection() (err error) {
+	if w.conn == nil {
+		w.conn, err = rcon.NewConnection(w.serverAddr, w.password)
 	}
 
-	_, err = watcher.conn.SendCommand(watcher.command)
+	_, err = w.conn.SendCommand(w.command)
 
 	if err != nil {
-		watcher.conn = nil
+		w.conn = nil
 	}
 
 	return err

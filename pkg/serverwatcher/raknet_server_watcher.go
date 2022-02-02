@@ -6,43 +6,43 @@ import (
 	"time"
 )
 
-type RakNetServerWatcher struct {
+type RaknetServerWatcher struct {
 	*WatcherBase
 	conn   net.Conn
 	buffer []byte
 }
 
-func (watcher *RakNetServerWatcher) Init(data map[string]interface{}) error {
+func (w *RaknetServerWatcher) Init(data map[string]interface{}) error {
 	return nil
 }
 
 const UnconnectedPingSize = 1 + 8 + 16 + 8 // byte + long + magic bytes (16) + long
 
-func (watcher *RakNetServerWatcher) CheckConnection() error {
-	if watcher.conn == nil {
-		err := watcher.setUdpConnectionAndBuffer()
+func (w *RaknetServerWatcher) CheckConnection() error {
+	if w.conn == nil {
+		err := w.setRaknetConnectionAndBuffer()
 		if err != nil {
 			return err
 		}
 	}
 
 	unconnectedPingBytes := makeUnconnectedPingPacket()
-	_, err := watcher.conn.Write(unconnectedPingBytes)
+	_, err := w.conn.Write(unconnectedPingBytes)
 	if err != nil {
 		return err
 	}
 
 	deadline := time.Now().Add(2 * time.Second)
-	err = watcher.conn.SetReadDeadline(deadline)
+	err = w.conn.SetReadDeadline(deadline)
 	if err != nil {
 		return err
 	}
 
-	for i := range watcher.buffer {
-		watcher.buffer[i] = 0
+	for i := range w.buffer {
+		w.buffer[i] = 0
 	}
 
-	n, err := watcher.conn.Read(watcher.buffer)
+	n, err := w.conn.Read(w.buffer)
 	if err != nil {
 		return err
 	}
@@ -54,15 +54,15 @@ func (watcher *RakNetServerWatcher) CheckConnection() error {
 	return nil
 }
 
-func (watcher *RakNetServerWatcher) setUdpConnectionAndBuffer() error {
+func (w *RaknetServerWatcher) setRaknetConnectionAndBuffer() error {
 	var err error
 
-	watcher.conn, err = net.Dial("udp", watcher.serverAddr)
+	w.conn, err = net.Dial("udp", w.serverAddr)
 	if err != nil {
 		return err
 	}
 
-	watcher.buffer = make([]byte, 64)
+	w.buffer = make([]byte, 64)
 
 	return nil
 }

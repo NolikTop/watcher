@@ -2,17 +2,26 @@ package config
 
 // RawConfig существует только для проверки на наличие required полей в конфиге
 type RawConfig struct {
-	VKToken  *string            `json:"vk_token"`
-	VKChatId *int               `json:"vk_chat_id"`
-	Time     *int               `json:"time"`
-	Servers  []*RawServerConfig `json:"servers"`
+	NotificationMethods []*RawNotificationMethodConfig `json:"notification_methods"`
+	Servers             []*RawServerConfig             `json:"servers"`
 }
 
 type Config struct {
-	VKToken  string
-	VKChatId int
-	Time     int
-	Servers  []*ServerConfig
+	NotificationMethods []*NotificationMethodConfig
+	Servers             []*ServerConfig
+}
+
+// RawNotificationMethodConfig существует только для проверки на наличие required полей в конфиге
+type RawNotificationMethodConfig struct {
+	Name   *string                 `json:"name"`
+	Method *string                 `json:"addr"`
+	Data   *map[string]interface{} `json:"data"`
+}
+
+type NotificationMethodConfig struct {
+	Name   string
+	Method string
+	Data   map[string]interface{}
 }
 
 // RawServerConfig существует только для проверки на наличие required полей в конфиге
@@ -20,6 +29,7 @@ type RawServerConfig struct {
 	Name         *string                 `json:"name"`
 	Addr         *string                 `json:"addr"`
 	Protocol     *string                 `json:"protocol"`
+	Chats        *[]string               `json:"chats"`
 	MentionsText *string                 `json:"mentions_text"`
 	Data         *map[string]interface{} `json:"data"`
 }
@@ -28,6 +38,7 @@ type ServerConfig struct {
 	Name         string
 	Addr         string
 	Protocol     string
+	Chats        []string
 	MentionsText string
 	Data         map[string]interface{}
 }

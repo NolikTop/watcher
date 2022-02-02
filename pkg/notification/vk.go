@@ -2,36 +2,110 @@ package notification
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strconv"
+	"watcher/pkg/serverwatcher"
 )
 
-var readyUrl = ""
+type Vk struct {
+	name string
 
-func initVK(token string, chatId int) {
-	readyUrl = "http://api.vk.com/method/messages.send?v=5.107&random_id=0&chat_id=" + strconv.Itoa(chatId) + "&access_token=" + url.QueryEscape(token) + "&message="
+	client *http.Client
+
+	chatId      int
+	accessToken string
 }
 
-func SendErrorNotification(name string, addr string, mentionsText string, err error) {
-	makeRequest("Сервер \"" + name + "\" (" + addr + ") упал.\nОшибка: " + err.Error() + "\nПризываю " + mentionsText)
-}
+func (v *Vk) Init(name string, data map[string]interface{}) error {
+	v.name = name
 
-func SendBadNotification(name string, addr string, mentionsText string, offTime uint) {
-	if offTime < 100 { // чтобы только вначале упоминало
-		makeRequest("Сервер \"" + name + "\" (" + addr + ") лежит уже " + strconv.Itoa(int(offTime)) + " секунд.\nПризываю " + mentionsText)
+	if chatId, ok := data["chat_id"]; ok {
+		v.chatId = chatId.(int)
 	} else {
-		makeRequest("Сервер \"" + name + "\" (" + addr + ") лежит уже " + strconv.Itoa(int(offTime)) + " секунд")
+		return errNoFieldInData("chat_id")
 	}
+
+	if accessToken, ok := data["access_token"]; ok {
+		v.accessToken = accessToken.(string)
+	} else {
+		return errNoFieldInData("access_token")
+	}
+
+	v.client = &http.Client{}
+
+	return nil
 }
 
-func SendOkNotification(name string, addr string) {
-	makeRequest("Сервер \"" + name + "\" (" + addr + ") поднялся")
+func (v *Vk) GetName() string {
+	return v.name
 }
 
-func makeRequest(ur string) {
-	_, err := http.Get(readyUrl + url.QueryEscape(ur))
+func (v *Vk) NotifyServerWentDown(server serverwatcher.ServerWatcher) error {
+	message := fmt.Sprintf(
+		`Сервер %s упал.
+Призываю %s`,
+		server.GetFormattedName(), server.GetMentionsText(),
+	)
+
+	return v.sendMessage(message)
+}
+
+func (v *Vk) NotifyServerStillIsDown(server serverwatcher.ServerWatcher) error {
+	message := fmt.Sprintf(
+		`Сервер %s все еще лежит. Прошло уже %d сек.
+Призываю %s`,
+		server.GetName(), server.GetOffTime(), server.GetMentionsText(),
+	)
+
+	return v.sendMessage(message)
+}
+
+func (v *Vk) NotifyServerIsUp(server serverwatcher.ServerWatcher) error {
+	message := fmt.Sprintf(
+		`Сервер %s встал.
+Призываю %s`,
+		server.GetName(), server.GetMentionsText(),
+	)
+
+	return v.sendMessage(message)
+}
+
+func (v *Vk) sendMessage(message string) error {
+	request, err := http.NewRequest("GET", "https://api.vk.com/method/messages.send", nil)
 	if err != nil {
-		fmt.Println("Couldn't make GET request: " + err.Error())
+		return err
 	}
+
+	query := request.URL.Query()
+	query.Add("v", "5.107") // todo вынести указание версии API в конфиг
+	query.Add("chat_id", strconv.Itoa(v.chatId))
+	query.Add("access_token", v.accessToken)
+	query.Add("random_id", "0")
+	query.Add("message", message)
+	request.URL.RawQuery = query.Encode()
+
+	response, err := v.client.Do(request)
+	if err != nil {
+		return err
+	}
+
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return err
+	}
+
+	err = getErrorFromResponse(body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getErrorFromResponse(responseBody []byte) error {
+	//todo
+	return nil
 }
