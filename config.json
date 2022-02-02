@@ -10,6 +10,15 @@
       "mentions_text": "@online"
     },
     {
+      "name": "my rcon server",
+      "addr": "127.0.0.1:19132",
+      "protocol": "rcon",
+      "mentions_text": "@online",
+      "data": {
+        "password": "abcdef"
+      }
+    },
+    {
       "name": "my http server",
       "addr": "127.0.0.1:8080",
       "protocol": "tcp",
@@ -19,8 +28,10 @@
       "name": "my udp server",
       "addr": "127.0.0.1:1234",
       "protocol": "udp",
-      "start_bytes_base64": "c29tZSBieXRlcw==",
-      "mentions_text": "@online"
+      "mentions_text": "@online",
+      "data": {
+        "send_bytes_base64": "c29tZSBieXRlcw=="
+      }
     }
   ]
 }

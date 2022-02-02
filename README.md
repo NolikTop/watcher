@@ -11,15 +11,15 @@ Watcher следит за указанными ему tcp/udp серверами
 Для нормальной работы Watcher рекомендуется иметь версию Go 1.14 или выше
 
 ```shell script
-go get github.com/GreenWix/watcher
-cd $GOPATH/src/github.com/GreenWix/watcher
-go build -o watcher
+go get github.com/GreenWix/watch
+cd $GOPATH/src/github.com/GreenWix/watch
+go build -o watch
 ```
 
 ## Запуск
 
 ```shell script
-./watcher -config=путь/до/конфига.json
+./watch -config=путь/до/конфига.json
 ```
 
 ---
@@ -53,19 +53,19 @@ start_bytes_base64 (только UDP) | Base64 байтов, после отпр
   "time": 10,
   "servers": [
     {
-      "name": "my minecraft pocket edition or bedrock edition server",
+      "name": "my minecraft pocket edition or bedrock edition serverwatcher",
       "addr": "127.0.0.1:19132",
       "protocol": "minecraft",
       "mentions_text": "@online"
     },
     {
-      "name": "my http server",
+      "name": "my http serverwatcher",
       "addr": "127.0.0.1:8080",
       "protocol": "tcp",
       "mentions_text": "@all"
     },
     {
-      "name": "my udp server",
+      "name": "my udp serverwatcher",
       "addr": "127.0.0.1:19132",
       "protocol": "udp",
       "start_bytes_base64": "BQD//wD+/v7+/f39/RI0VngKAA==",

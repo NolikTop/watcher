@@ -1,4 +1,4 @@
-package main
+package notification
 
 import (
 	"fmt"
@@ -13,11 +13,11 @@ func initVK(token string, chatId int) {
 	readyUrl = "http://api.vk.com/method/messages.send?v=5.107&random_id=0&chat_id=" + strconv.Itoa(chatId) + "&access_token=" + url.QueryEscape(token) + "&message="
 }
 
-func sendErrorNotification(name string, addr string, mentionsText string, err error) {
+func SendErrorNotification(name string, addr string, mentionsText string, err error) {
 	makeRequest("Сервер \"" + name + "\" (" + addr + ") упал.\nОшибка: " + err.Error() + "\nПризываю " + mentionsText)
 }
 
-func sendBadNotification(name string, addr string, mentionsText string, offTime uint) {
+func SendBadNotification(name string, addr string, mentionsText string, offTime uint) {
 	if offTime < 100 { // чтобы только вначале упоминало
 		makeRequest("Сервер \"" + name + "\" (" + addr + ") лежит уже " + strconv.Itoa(int(offTime)) + " секунд.\nПризываю " + mentionsText)
 	} else {
@@ -25,7 +25,7 @@ func sendBadNotification(name string, addr string, mentionsText string, offTime 
 	}
 }
 
-func sendOkNotification(name string, addr string) {
+func SendOkNotification(name string, addr string) {
 	makeRequest("Сервер \"" + name + "\" (" + addr + ") поднялся")
 }
 
