@@ -44,13 +44,16 @@ func makeTcpServerWatcher(address string) (serverwatcher.ServerWatcher, error) {
 }
 
 func runTcpServer(t *testing.T, address string, status chan int) {
-	serv, _ := net.Listen("tcp", address)
+	serv, err := net.Listen("tcp", address)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	status <- statusServerIsStarted
 
-	_, err := serv.Accept()
+	_, err = serv.Accept()
 	if err != nil {
-		t.Fatal("Couldnt start tcp server", err)
+		t.Fatal(err)
 	}
 
 	assert.Equal(t, statusStopServer, <-status)

@@ -29,8 +29,6 @@ func (watcher *RconServerWatcher) Init(data map[string]interface{}) error {
 }
 
 func (watcher *RconServerWatcher) CheckConnection() (err error) {
-	//todo мб стоит постоянно открывать соединение?
-
 	if watcher.conn == nil {
 		watcher.conn, err = rcon.NewConnection(watcher.serverAddr, watcher.password)
 	}

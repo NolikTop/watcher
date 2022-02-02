@@ -96,7 +96,10 @@ func makeUdpServerWatcher(address string) (serverwatcher.ServerWatcher, error) {
 }
 
 func runUdpServer(t *testing.T, address string, status chan int) {
-	serv, _ := net.ListenPacket("udp", address)
+	serv, err := net.ListenPacket("udp", address)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	status <- statusServerIsStarted
 
