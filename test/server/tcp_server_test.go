@@ -8,30 +8,26 @@ import (
 	"watcher/pkg/serverwatcher"
 )
 
-func TestTcpServer(t *testing.T) {
-	address := ":1525"
-
-	serv, err := makeTcpServerWatcher(address)
+func TestTcpServerWatcher(t *testing.T) {
+	serv, err := makeTcpServerWatcher(tcpServerAddress)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert.Error(t, serv.CheckConnection())
 
-	messageFromServer := make(chan int, 1)
-	messageToServer := make(chan int, 1)
+	status := make(chan int)
 
-	go runTcpServer(t, address, messageFromServer, messageToServer)
+	go runTcpServer(t, tcpServerAddress, status)
 
-	assert.Equal(t, statusServerIsStarted, <-messageFromServer)
-
+	assert.Equal(t, statusServerIsStarted, <-status)
 	if !assert.NoError(t, serv.CheckConnection()) {
 		t.Fatal("After the server starts successfully, it should connect without errors")
 	}
 
-	messageToServer <- statusStopServer
-	assert.Equal(t, statusServerIsStopped, <-messageFromServer)
+	status <- statusStopServer
 
+	assert.Equal(t, statusServerIsStopped, <-status)
 	assert.Error(t, serv.CheckConnection())
 }
 
@@ -47,22 +43,22 @@ func makeTcpServerWatcher(address string) (serverwatcher.ServerWatcher, error) {
 	return serverwatcher.NewServer(cfg)
 }
 
-func runTcpServer(t *testing.T, address string, messageFromServer chan int, messageToServer chan int) {
-	ln, _ := net.Listen("tcp", address)
+func runTcpServer(t *testing.T, address string, status chan int) {
+	serv, _ := net.Listen("tcp", address)
 
-	messageFromServer <- statusServerIsStarted
+	status <- statusServerIsStarted
 
-	_, err := ln.Accept()
+	_, err := serv.Accept()
 	if err != nil {
 		t.Fatal("Couldnt start tcp server", err)
 	}
 
-	assert.Equal(t, statusStopServer, <-messageToServer)
+	assert.Equal(t, statusStopServer, <-status)
 
-	err = ln.Close()
+	err = serv.Close()
 	if err != nil {
 		t.Error(err)
 	}
 
-	messageFromServer <- statusServerIsStopped
+	status <- statusServerIsStopped
 }

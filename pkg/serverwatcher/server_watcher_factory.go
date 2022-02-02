@@ -36,6 +36,11 @@ func NewServer(config *config.ServerConfig) (ServerWatcher, error) {
 		return nil, errUnknownProtocol(protocol)
 	}
 
+	err := server.Init(config.Data)
+	if err != nil {
+		return nil, err
+	}
+
 	return server, nil
 }
 
