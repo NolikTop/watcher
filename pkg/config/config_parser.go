@@ -159,7 +159,7 @@ func verifyServerRequiredFields(id int, serverData *RawServerConfig) error {
 	}
 
 	if serverData.Protocol == nil {
-		return errServerHasNotField(serverName, "serverwatcher")
+		return errServerHasNotField(serverName, "server")
 	}
 
 	if serverData.Chats == nil {

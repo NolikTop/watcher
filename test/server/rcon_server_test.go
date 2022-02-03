@@ -4,7 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"watcher/pkg/config"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 )
 
 // к rcon нормальные тесты сделать не выйдет потому что рабочих rcon серверов на go я просто не нашел
@@ -24,7 +24,7 @@ func TestRconServerWatcherNoData(t *testing.T) {
 		Data:         nil,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }
 
@@ -39,7 +39,7 @@ func TestRconServerWatcherWithEmptyData(t *testing.T) {
 		Data:         data,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }
 
@@ -48,14 +48,14 @@ func TestRconServerWatcherWithCommandAndNoPassword(t *testing.T) {
 	data["command"] = "test"
 
 	cfg := &config.ServerConfig{
-		Name:         "Test RCON ServerWatcher",
+		Name:         "Test RCON Server",
 		Addr:         "127.0.0.1" + rconServerAddress,
 		Protocol:     "rcon",
 		MentionsText: "@all",
 		Data:         data,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }
 
@@ -71,6 +71,6 @@ func TestRconServerWatcherWithPasswordAndNoCommand(t *testing.T) {
 		Data:         data,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }

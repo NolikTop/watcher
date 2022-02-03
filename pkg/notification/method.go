@@ -1,13 +1,13 @@
 package notification
 
-import "watcher/pkg/serverwatcher"
+import "watcher/pkg/server"
 
 type Method interface {
 	GetName() string
 
 	Init(name string, data map[string]interface{}) error
 
-	NotifyServerWentDown(server serverwatcher.ServerWatcher) error
-	NotifyServerStillIsDown(server serverwatcher.ServerWatcher) error
-	NotifyServerIsUp(server serverwatcher.ServerWatcher) error
+	NotifyServerWentDown(server server.Server) error
+	NotifyServerStillIsDown(server server.Server) error
+	NotifyServerIsUp(server server.Server) error
 }

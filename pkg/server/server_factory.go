@@ -1,12 +1,12 @@
-package serverwatcher
+package server
 
 import (
 	"errors"
 	"watcher/pkg/config"
 )
 
-func newBase(config *config.ServerConfig) *WatcherBase {
-	return &WatcherBase{
+func newBase(config *config.ServerConfig) *Base {
+	return &Base{
 		name:         config.Name,
 		serverAddr:   config.Addr,
 		working:      true,
@@ -16,23 +16,23 @@ func newBase(config *config.ServerConfig) *WatcherBase {
 	}
 }
 
-func NewServer(config *config.ServerConfig) (ServerWatcher, error) {
-	var server ServerWatcher
+func NewServer(config *config.ServerConfig) (Server, error) {
+	var server Server
 
 	base := newBase(config)
 
 	protocol := config.Protocol
 	switch protocol {
 	case "udp":
-		server = &UdpServerWatcher{WatcherBase: base}
+		server = &UdpServer{Base: base}
 	case "tcp":
-		server = &TcpServerWatcher{WatcherBase: base}
+		server = &TcpServer{Base: base}
 	case "raknet":
-		server = &RaknetServerWatcher{WatcherBase: base}
+		server = &RaknetServer{Base: base}
 	case "minecraft":
 		return nil, errProtocolNotImplemented(protocol)
 	case "rcon":
-		server = &RconServerWatcher{WatcherBase: base}
+		server = &RconServer{Base: base}
 	default:
 		return nil, errUnknownProtocol(protocol)
 	}
@@ -50,5 +50,5 @@ func errProtocolNotImplemented(serverProtocol string) error {
 }
 
 func errUnknownProtocol(serverProtocol string) error {
-	return errors.New("Unknown serverwatcher \"" + serverProtocol + "\"")
+	return errors.New("Unknown server \"" + serverProtocol + "\"")
 }

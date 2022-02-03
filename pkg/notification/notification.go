@@ -2,7 +2,7 @@ package notification
 
 import (
 	log "github.com/sirupsen/logrus"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 )
 
 var methods map[string]Method
@@ -26,33 +26,33 @@ func Add(notificationMethod Method) error {
 	return nil
 }
 
-func ServerWentDown(watcher serverwatcher.ServerWatcher) {
-	for _, chat := range watcher.GetChats() {
+func ServerWentDown(serv server.Server) {
+	for _, chat := range serv.GetChats() {
 		method := methods[chat]
 
-		err := method.NotifyServerWentDown(watcher)
+		err := method.NotifyServerWentDown(serv)
 		if err != nil {
 			log.Error(err)
 		}
 	}
 }
 
-func ServerStillIsDown(watcher serverwatcher.ServerWatcher) {
-	for _, chat := range watcher.GetChats() {
+func ServerStillIsDown(serv server.Server) {
+	for _, chat := range serv.GetChats() {
 		method := methods[chat]
 
-		err := method.NotifyServerStillIsDown(watcher)
+		err := method.NotifyServerStillIsDown(serv)
 		if err != nil {
 			log.Error(err)
 		}
 	}
 }
 
-func ServerIsUp(watcher serverwatcher.ServerWatcher) {
-	for _, chat := range watcher.GetChats() {
+func ServerIsUp(serv server.Server) {
+	for _, chat := range serv.GetChats() {
 		method := methods[chat]
 
-		err := method.NotifyServerIsUp(watcher)
+		err := method.NotifyServerIsUp(serv)
 		if err != nil {
 			log.Error(err)
 		}

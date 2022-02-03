@@ -16,7 +16,7 @@ func NewMethod(config *config.NotificationMethodConfig) (Method, error) {
 		return nil, errUnknownMethod(protocol)
 	}
 
-	err := notificationMethod.Init(config.Data)
+	err := notificationMethod.Init(config.Name, config.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -25,5 +25,5 @@ func NewMethod(config *config.NotificationMethodConfig) (Method, error) {
 }
 
 func errUnknownMethod(serverProtocol string) error {
-	return errors.New("Unknown serverwatcher \"" + serverProtocol + "\"")
+	return errors.New("Unknown server \"" + serverProtocol + "\"")
 }

@@ -6,7 +6,7 @@ import (
 	"net"
 	"testing"
 	"watcher/pkg/config"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 )
 
 func TestUdpServerWatcherNoData(t *testing.T) {
@@ -18,7 +18,7 @@ func TestUdpServerWatcherNoData(t *testing.T) {
 		Data:         nil,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }
 
@@ -33,7 +33,7 @@ func TestUdpServerWatcherWithDataAndNoSendBytes(t *testing.T) {
 		Data:         data,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }
 
@@ -51,7 +51,7 @@ func TestUdpServerWatcherWithDataAndWrongBase64SendBytes(t *testing.T) {
 		Data:         data,
 	}
 
-	_, err := serverwatcher.NewServer(cfg)
+	_, err := server.NewServer(cfg)
 	assert.Error(t, err)
 }
 
@@ -78,21 +78,21 @@ func TestUdpServerWatcher(t *testing.T) {
 	assert.Error(t, serv.CheckConnection())
 }
 
-func makeUdpServerWatcher(address string) (serverwatcher.ServerWatcher, error) {
+func makeUdpServerWatcher(address string) (server.Server, error) {
 	sendBytes := "1234567890"
 
 	data := make(map[string]interface{})
 	data["send_bytes_base64"] = base64.StdEncoding.EncodeToString([]byte(sendBytes))
 
 	cfg := &config.ServerConfig{
-		Name:         "Test UDP ServerWatcher",
+		Name:         "Test UDP Server",
 		Addr:         "127.0.0.1" + address,
 		Protocol:     "udp",
 		MentionsText: "@all",
 		Data:         data,
 	}
 
-	return serverwatcher.NewServer(cfg)
+	return server.NewServer(cfg)
 }
 
 func runUdpServer(t *testing.T, address string, status chan int) {

@@ -5,7 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"watcher/pkg/config"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 )
 
 func TestRaknetServerWatcher(t *testing.T) {
@@ -31,16 +31,16 @@ func TestRaknetServerWatcher(t *testing.T) {
 	assert.Error(t, serv.CheckConnection())
 }
 
-func makeRaknetServerWatcher(address string) (serverwatcher.ServerWatcher, error) {
+func makeRaknetServerWatcher(address string) (server.Server, error) {
 	cfg := &config.ServerConfig{
-		Name:         "Test Raknet ServerWatcher",
+		Name:         "Test Raknet Server",
 		Addr:         "127.0.0.1" + address,
 		Protocol:     "raknet",
 		MentionsText: "@all",
 		Data:         nil,
 	}
 
-	return serverwatcher.NewServer(cfg)
+	return server.NewServer(cfg)
 }
 
 func runRaknetServer(t *testing.T, address string, status chan int) {

@@ -1,4 +1,4 @@
-package serverwatcher
+package server
 
 import (
 	"github.com/GreenWix/binary"
@@ -6,43 +6,43 @@ import (
 	"time"
 )
 
-type RaknetServerWatcher struct {
-	*WatcherBase
+type RaknetServer struct {
+	*Base
 	conn   net.Conn
 	buffer []byte
 }
 
-func (w *RaknetServerWatcher) Init(data map[string]interface{}) error {
+func (s *RaknetServer) Init(data map[string]interface{}) error {
 	return nil
 }
 
 const UnconnectedPingSize = 1 + 8 + 16 + 8 // byte + long + magic bytes (16) + long
 
-func (w *RaknetServerWatcher) CheckConnection() error {
-	if w.conn == nil {
-		err := w.setRaknetConnectionAndBuffer()
+func (s *RaknetServer) CheckConnection() error {
+	if s.conn == nil {
+		err := s.setRaknetConnectionAndBuffer()
 		if err != nil {
 			return err
 		}
 	}
 
 	unconnectedPingBytes := makeUnconnectedPingPacket()
-	_, err := w.conn.Write(unconnectedPingBytes)
+	_, err := s.conn.Write(unconnectedPingBytes)
 	if err != nil {
 		return err
 	}
 
 	deadline := time.Now().Add(2 * time.Second)
-	err = w.conn.SetReadDeadline(deadline)
+	err = s.conn.SetReadDeadline(deadline)
 	if err != nil {
 		return err
 	}
 
-	for i := range w.buffer {
-		w.buffer[i] = 0
+	for i := range s.buffer {
+		s.buffer[i] = 0
 	}
 
-	n, err := w.conn.Read(w.buffer)
+	n, err := s.conn.Read(s.buffer)
 	if err != nil {
 		return err
 	}
@@ -54,15 +54,15 @@ func (w *RaknetServerWatcher) CheckConnection() error {
 	return nil
 }
 
-func (w *RaknetServerWatcher) setRaknetConnectionAndBuffer() error {
+func (s *RaknetServer) setRaknetConnectionAndBuffer() error {
 	var err error
 
-	w.conn, err = net.Dial("udp", w.serverAddr)
+	s.conn, err = net.Dial("udp", s.serverAddr)
 	if err != nil {
 		return err
 	}
 
-	w.buffer = make([]byte, 64)
+	s.buffer = make([]byte, 64)
 
 	return nil
 }

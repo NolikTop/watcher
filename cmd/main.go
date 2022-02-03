@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"watcher/pkg/config"
 	"watcher/pkg/notification"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 	"watcher/pkg/watch"
 )
 
@@ -25,17 +25,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	watchers, err := getWatchers(c.Servers)
+	servers, err := getServers(c.Servers)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = checkMethodNamesInServers(watchers)
+	err = checkMethodNamesInServers(servers)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	runWatchers(watchers)
+	runWatchers(servers)
 
 	select {}
 }
@@ -56,28 +56,28 @@ func addMethods(methodsConfigs []*config.NotificationMethodConfig) error {
 	return nil
 }
 
-func getWatchers(serversConfigs []*config.ServerConfig) ([]serverwatcher.ServerWatcher, error) {
-	watchers := make([]serverwatcher.ServerWatcher, len(serversConfigs))
+func getServers(serversConfigs []*config.ServerConfig) ([]server.Server, error) {
+	servers := make([]server.Server, len(serversConfigs))
 
-	for _, serverConfig := range serversConfigs {
-		watcher, err := serverwatcher.NewServer(serverConfig)
+	for i, serverConfig := range serversConfigs {
+		serv, err := server.NewServer(serverConfig)
 		if err != nil {
 			return nil, err
 		}
 
-		watchers = append(watchers, watcher)
+		servers[i] = serv
 	}
 
-	return watchers, nil
+	return servers, nil
 }
 
-func checkMethodNamesInServers(watchers []serverwatcher.ServerWatcher) error {
+func checkMethodNamesInServers(servers []server.Server) error {
 	chats := notification.GetMethods()
 
-	for _, watcher := range watchers {
-		for _, chatName := range watcher.GetChats() {
+	for _, serv := range servers {
+		for _, chatName := range serv.GetChats() {
 			if _, ok := chats[chatName]; !ok {
-				return errUnknownChatName(watcher.GetName(), chatName)
+				return errUnknownChatName(serv.GetName(), chatName)
 			}
 		}
 	}
@@ -85,7 +85,7 @@ func checkMethodNamesInServers(watchers []serverwatcher.ServerWatcher) error {
 	return nil
 }
 
-func runWatchers(watchers []serverwatcher.ServerWatcher) {
+func runWatchers(watchers []server.Server) {
 	for _, watcher := range watchers {
 		go watch.Watch(watcher)
 	}

@@ -53,19 +53,19 @@ start_bytes_base64 (только UDP) | Base64 байтов, после отпр
   "time": 10,
   "servers": [
     {
-      "name": "my minecraft pocket edition or bedrock edition serverwatcher",
+      "name": "my minecraft pocket edition or bedrock edition server",
       "addr": "127.0.0.1:19132",
       "protocol": "minecraft",
       "mentions_text": "@online"
     },
     {
-      "name": "my http serverwatcher",
+      "name": "my http server",
       "addr": "127.0.0.1:8080",
       "protocol": "tcp",
       "mentions_text": "@all"
     },
     {
-      "name": "my udp serverwatcher",
+      "name": "my udp server",
       "addr": "127.0.0.1:19132",
       "protocol": "udp",
       "start_bytes_base64": "BQD//wD+/v7+/f39/RI0VngKAA==",

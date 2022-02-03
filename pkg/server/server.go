@@ -1,6 +1,6 @@
-package serverwatcher
+package server
 
-type ServerWatcher interface {
+type Server interface {
 	Init(data map[string]interface{}) error
 	CheckConnection() error
 

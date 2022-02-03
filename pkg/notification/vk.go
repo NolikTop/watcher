@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 )
 
 type Vk struct {
@@ -41,7 +41,7 @@ func (v *Vk) GetName() string {
 	return v.name
 }
 
-func (v *Vk) NotifyServerWentDown(server serverwatcher.ServerWatcher) error {
+func (v *Vk) NotifyServerWentDown(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s упал.
 Призываю %s`,
@@ -51,7 +51,7 @@ func (v *Vk) NotifyServerWentDown(server serverwatcher.ServerWatcher) error {
 	return v.sendMessage(message)
 }
 
-func (v *Vk) NotifyServerStillIsDown(server serverwatcher.ServerWatcher) error {
+func (v *Vk) NotifyServerStillIsDown(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s все еще лежит. Прошло уже %d сек.
 Призываю %s`,
@@ -61,7 +61,7 @@ func (v *Vk) NotifyServerStillIsDown(server serverwatcher.ServerWatcher) error {
 	return v.sendMessage(message)
 }
 
-func (v *Vk) NotifyServerIsUp(server serverwatcher.ServerWatcher) error {
+func (v *Vk) NotifyServerIsUp(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s встал.
 Призываю %s`,

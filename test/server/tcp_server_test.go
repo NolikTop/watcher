@@ -5,7 +5,7 @@ import (
 	"net"
 	"testing"
 	"watcher/pkg/config"
-	"watcher/pkg/serverwatcher"
+	"watcher/pkg/server"
 )
 
 func TestTcpServerWatcher(t *testing.T) {
@@ -31,16 +31,16 @@ func TestTcpServerWatcher(t *testing.T) {
 	assert.Error(t, serv.CheckConnection())
 }
 
-func makeTcpServerWatcher(address string) (serverwatcher.ServerWatcher, error) {
+func makeTcpServerWatcher(address string) (server.Server, error) {
 	cfg := &config.ServerConfig{
-		Name:         "Test TCP ServerWatcher",
+		Name:         "Test TCP Server",
 		Addr:         "127.0.0.1" + address,
 		Protocol:     "tcp",
 		MentionsText: "@all",
 		Data:         nil,
 	}
 
-	return serverwatcher.NewServer(cfg)
+	return server.NewServer(cfg)
 }
 
 func runTcpServer(t *testing.T, address string, status chan int) {

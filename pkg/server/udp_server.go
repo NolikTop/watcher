@@ -1,4 +1,4 @@
-package serverwatcher
+package server
 
 import (
 	"encoding/base64"
@@ -6,21 +6,21 @@ import (
 	"time"
 )
 
-type UdpServerWatcher struct {
-	*WatcherBase
+type UdpServer struct {
+	*Base
 	sendBytes []byte
 	conn      net.Conn
 	buffer    []byte
 }
 
-func (w *UdpServerWatcher) Init(data map[string]interface{}) error {
+func (s *UdpServer) Init(data map[string]interface{}) error {
 	if sendBytesBase64, ok := data["send_bytes_base64"]; ok {
 		sendBytes, err := base64.StdEncoding.DecodeString(sendBytesBase64.(string))
 		if err != nil {
 			return err
 		}
 
-		w.sendBytes = sendBytes
+		s.sendBytes = sendBytes
 	} else {
 		return errNoFieldInData("send_bytes_base64")
 	}
@@ -28,28 +28,28 @@ func (w *UdpServerWatcher) Init(data map[string]interface{}) error {
 	return nil
 }
 
-func (w *UdpServerWatcher) CheckConnection() (err error) {
-	if w.conn == nil {
-		w.conn, err = net.Dial("udp", w.serverAddr)
-		w.buffer = make([]byte, 64)
+func (s *UdpServer) CheckConnection() (err error) {
+	if s.conn == nil {
+		s.conn, err = net.Dial("udp", s.serverAddr)
+		s.buffer = make([]byte, 64)
 	}
 
-	_, err = w.conn.Write(w.sendBytes)
+	_, err = s.conn.Write(s.sendBytes)
 	if err != nil {
 		return
 	}
 
 	deadline := time.Now().Add(2 * time.Second)
-	err = w.conn.SetReadDeadline(deadline)
+	err = s.conn.SetReadDeadline(deadline)
 	if err != nil {
 		return
 	}
 
-	for i := range w.buffer {
-		w.buffer[i] = 0
+	for i := range s.buffer {
+		s.buffer[i] = 0
 	}
 
-	n, err := w.conn.Read(w.buffer)
+	n, err := s.conn.Read(s.buffer)
 	if err != nil {
 		return
 	}
