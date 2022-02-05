@@ -24,7 +24,7 @@ go install github.com/NolikTop/watcher@latest
 ## Запуск
 
 ```shell script
-./watcher -config=путь/до/конфига.json
+watcher -config=путь/до/конфига.json
 ```
 
 ---
