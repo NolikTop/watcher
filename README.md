@@ -2,7 +2,13 @@
 
 Watcher следит за указанными ему серверами. Если какой-то из серверов прекратил работу, watcher предупредит Вас об этом
 
-Watcher умеет следить за **tcp**, **udp**, **rcon**, **raknet**, **minecraft**, **http** серверами.
+Watcher умеет следить за **tcp**, **udp**, **rcon**, **raknet**, **http** серверами.
+
+Если вы хотите следить за состоянием сервера Minecraft (Pocket/Bedrock edition), используйте **raknet** и/или **rcon**.
+
+Проверяя подключение к raknet можно понять, жив ли поток raknet, осуществляющий коммуникацию клиента майнкрафта и сервера.
+
+Проверяя подключение к rcon можно понять, жив ли главный поток сервера. 
 
 ![messages from watcher](watcher_is_watching_you.png)
 --
@@ -50,15 +56,6 @@ go build -o watcher
     }
   ],
   "servers": [
-    {
-      "name": "my minecraft pocket edition or bedrock edition server",
-      "addr": "127.0.0.1:19132",
-      "protocol": "minecraft",
-      "chats": [
-        "minecraft"
-      ],
-      "mentions_text": "@online"
-    },
     {
       "name": "my raknet server",
       "addr": "127.0.0.1:19132",
@@ -129,7 +126,7 @@ servers | список [серверов](#сервер)
 ------------ | -------------
 name | имя сервера (нужно для уведомлений, чтобы Вы поняли какой именно сервер упал)
 addr | адрес сервера
-protocol | tcp/udp/raknet/rcon/minecraft/http. Протокол, используемый сервером
+protocol | tcp/udp/raknet/rcon/http. Протокол, используемый сервером
 chats | список названий способов связи, в которые будет писаться информация о падении сервера
 mentions_text | строка, содержащая список упоминаний пользователей, которые ответственны за данный сервер
 data | дополнительные данные
