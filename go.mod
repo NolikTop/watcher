@@ -3,19 +3,19 @@ module watcher
 go 1.17
 
 require (
-	github.com/GreenWix/binary v0.0.0-20210206221015-b2d738f834f3
-	github.com/micvbang/pocketmine-rcon v0.0.0-20171229130351-03454839a2aa
 	github.com/sandertv/gophertunnel v1.18.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
 )
 
 require (
+	github.com/GreenWix/binary v0.0.0-20210206221015-b2d738f834f3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-gl/mathgl v1.0.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/klauspost/compress v1.11.1 // indirect
+	github.com/micvbang/pocketmine-rcon v0.0.0-20171229130351-03454839a2aa // indirect
 	github.com/muhammadmuzzammil1998/jsonc v0.0.0-20200627155943-e1c384b63054 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sandertv/go-raknet v1.10.2 // indirect

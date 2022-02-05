@@ -12,12 +12,12 @@ type Base struct {
 	mentionsText string
 }
 
-func (b *Base) SetWorking(working bool) {
+func (b *Base) MarkIsWorking(working bool) {
 	b.offTime = 0
 	b.working = working
 }
 
-func (b *Base) IsWorking() bool {
+func (b *Base) IsMarkedAsWorking() bool {
 	return b.working
 }
 

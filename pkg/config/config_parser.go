@@ -104,7 +104,7 @@ func verifyMethodRequiredFields(id int, methodData *RawNotificationMethodConfig)
 	serverName := *methodData.Name
 
 	if methodData.Method == nil {
-		return errServerHasNotField(serverName, "method")
+		return errMethodHasNotField(serverName, "method")
 	}
 
 	if methodData.Data == nil {

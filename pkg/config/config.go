@@ -14,7 +14,7 @@ type Config struct {
 // RawNotificationMethodConfig существует только для проверки на наличие required полей в конфиге
 type RawNotificationMethodConfig struct {
 	Name   *string                 `json:"name"`
-	Method *string                 `json:"addr"`
+	Method *string                 `json:"method"`
 	Data   *map[string]interface{} `json:"data"`
 }
 

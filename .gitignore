@@ -9,6 +9,7 @@
 
 main
 watcher
+cmd/watcher
 
 testconfig.json
 

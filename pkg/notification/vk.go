@@ -21,7 +21,7 @@ func (v *Vk) Init(name string, data map[string]interface{}) error {
 	v.name = name
 
 	if chatId, ok := data["chat_id"]; ok {
-		v.chatId = chatId.(int)
+		v.chatId = int(chatId.(float64)) // сразу в int не дает кастить =(((
 	} else {
 		return errNoFieldInData("chat_id")
 	}
@@ -55,7 +55,7 @@ func (v *Vk) NotifyServerStillIsDown(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s все еще лежит. Прошло уже %d сек.
 Призываю %s`,
-		server.GetName(), server.GetOffTime(), server.GetMentionsText(),
+		server.GetFormattedName(), server.GetOffTime(), server.GetMentionsText(),
 	)
 
 	return v.sendMessage(message)
@@ -65,7 +65,7 @@ func (v *Vk) NotifyServerIsUp(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s встал.
 Призываю %s`,
-		server.GetName(), server.GetMentionsText(),
+		server.GetFormattedName(), server.GetMentionsText(),
 	)
 
 	return v.sendMessage(message)

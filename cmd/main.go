@@ -12,6 +12,8 @@ import (
 func main() {
 	log := logrus.New()
 
+	log.Info("Loading config...")
+
 	configPath := flag.String("config", "no", "path to JSON config")
 	flag.Parse()
 
@@ -20,10 +22,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = addMethods(c.NotificationMethods)
+	notification.Init()
+
+	log.Info("Loading notification methods...")
+
+	err = addNotificationMethods(c.NotificationMethods)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Info("Loading servers...")
 
 	servers, err := getServers(c.Servers)
 	if err != nil {
@@ -35,12 +43,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Info("Starting watchers...")
+
 	runWatchers(servers)
 
-	select {}
+	log.Info("Watcher started successfully")
+
+	select {} // возможно тут стоило бы просто ловить сигнал от ос об остановке процесса.. но зачем?
 }
 
-func addMethods(methodsConfigs []*config.NotificationMethodConfig) error {
+func addNotificationMethods(methodsConfigs []*config.NotificationMethodConfig) error {
 	for _, methodConfig := range methodsConfigs {
 		method, err := notification.NewMethod(methodConfig)
 		if err != nil {
@@ -85,8 +97,9 @@ func checkMethodNamesInServers(servers []server.Server) error {
 	return nil
 }
 
-func runWatchers(watchers []server.Server) {
-	for _, watcher := range watchers {
-		go watch.Watch(watcher)
+func runWatchers(servers []server.Server) {
+	for _, serv := range servers {
+		logrus.Info("Watching for " + serv.GetFormattedName())
+		go watch.Watch(serv)
 	}
 }

@@ -16,8 +16,8 @@ type Server interface {
 
 	GetMentionsText() string
 
-	SetWorking(working bool)
-	IsWorking() bool
+	MarkIsWorking(working bool)
+	IsMarkedAsWorking() bool
 
 	IncrementOffTime()
 	GetOffTime() uint

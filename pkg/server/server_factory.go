@@ -11,6 +11,7 @@ func newBase(config *config.ServerConfig) *Base {
 		serverAddr:   config.Addr,
 		working:      true,
 		offTime:      0,
+		chats:        config.Chats,
 		mentionsText: config.MentionsText,
 		protocol:     config.Protocol,
 	}
