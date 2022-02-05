@@ -19,7 +19,7 @@ Watcher умеет следить за **tcp**, **udp**, **rcon**, **raknet**, *
 
 ```shell script
 go get github.com/NolikTop/watcher
-cd $GOPATH/src/github.com/NolikTop/watcher
+cd $GOPATH/src/github.com/NolikTop/watcher/cmd
 go build -o watcher
 ```
 
