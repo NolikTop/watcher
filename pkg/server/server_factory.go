@@ -34,6 +34,8 @@ func NewServer(config *config.ServerConfig) (Server, error) {
 		return nil, errProtocolNotImplemented(protocol)
 	case "rcon":
 		server = &RconServer{Base: base}
+	case "http":
+		server = &HttpServer{Base: base}
 	default:
 		return nil, errUnknownProtocol(protocol)
 	}
