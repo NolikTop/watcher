@@ -2,7 +2,7 @@ package notification
 
 import (
 	"errors"
-	"watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/config"
 )
 
 func NewMethod(config *config.NotificationMethodConfig) (Method, error) {

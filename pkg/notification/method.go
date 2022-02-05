@@ -1,6 +1,6 @@
 package notification
 
-import "watcher/pkg/server"
+import "github.com/NolikTop/watcher/pkg/server"
 
 type Method interface {
 	GetName() string

@@ -1,11 +1,11 @@
 package watch
 
 import (
+	"github.com/NolikTop/watcher/pkg/notification"
+	"github.com/NolikTop/watcher/pkg/server"
 	log "github.com/sirupsen/logrus"
 	"math/rand"
 	"time"
-	"watcher/pkg/notification"
-	"watcher/pkg/server"
 )
 
 func Watch(serv server.Server) {

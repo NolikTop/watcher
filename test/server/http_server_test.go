@@ -2,13 +2,13 @@ package server
 
 import (
 	"fmt"
+	"github.com/NolikTop/watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/server"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
 	"time"
-	"watcher/pkg/config"
-	"watcher/pkg/server"
 )
 
 func TestHttpServerWatcher(t *testing.T) {

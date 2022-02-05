@@ -2,10 +2,10 @@ package notification
 
 import (
 	"fmt"
+	"github.com/NolikTop/watcher/pkg/server"
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"watcher/pkg/server"
 )
 
 type Vk struct {

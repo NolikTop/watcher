@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
+	"github.com/NolikTop/watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/notification"
+	"github.com/NolikTop/watcher/pkg/server"
+	"github.com/NolikTop/watcher/pkg/watch"
 	"github.com/sirupsen/logrus"
-	"watcher/pkg/config"
-	"watcher/pkg/notification"
-	"watcher/pkg/server"
-	"watcher/pkg/watch"
 )
 
 func main() {

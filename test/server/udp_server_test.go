@@ -2,11 +2,11 @@ package server
 
 import (
 	"encoding/base64"
+	"github.com/NolikTop/watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/server"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"testing"
-	"watcher/pkg/config"
-	"watcher/pkg/server"
 )
 
 func TestUdpServerWatcherNoData(t *testing.T) {

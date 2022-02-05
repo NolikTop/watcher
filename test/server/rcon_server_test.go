@@ -1,10 +1,10 @@
 package server
 
 import (
+	"github.com/NolikTop/watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/server"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"watcher/pkg/config"
-	"watcher/pkg/server"
 )
 
 // к rcon нормальные тесты сделать не выйдет потому что рабочих rcon серверов на go я просто не нашел

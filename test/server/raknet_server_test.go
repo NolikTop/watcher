@@ -1,11 +1,11 @@
 package server
 
 import (
+	"github.com/NolikTop/watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/server"
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"watcher/pkg/config"
-	"watcher/pkg/server"
 )
 
 func TestRaknetServerWatcher(t *testing.T) {

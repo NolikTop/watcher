@@ -1,8 +1,6 @@
-module watcher
+module github.com/NolikTop/watcher
 
 go 1.17
-
-replace github.com/NolikTop/watcher => ./watcher
 
 require (
 	github.com/GreenWix/binary v0.0.0-20210206221015-b2d738f834f3

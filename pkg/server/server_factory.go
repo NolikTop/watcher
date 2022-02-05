@@ -2,7 +2,7 @@ package server
 
 import (
 	"errors"
-	"watcher/pkg/config"
+	"github.com/NolikTop/watcher/pkg/config"
 )
 
 func newBase(config *config.ServerConfig) *Base {

@@ -1,8 +1,8 @@
 package notification
 
 import (
+	"github.com/NolikTop/watcher/pkg/server"
 	log "github.com/sirupsen/logrus"
-	"watcher/pkg/server"
 )
 
 var methods map[string]Method
