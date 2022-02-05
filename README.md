@@ -18,9 +18,7 @@ Watcher умеет следить за **tcp**, **udp**, **rcon**, **raknet**, *
 Для нормальной работы Watcher рекомендуется иметь версию Go 1.17 или выше
 
 ```shell script
-go get github.com/NolikTop/watcher
-cd $GOPATH/src/github.com/NolikTop/watcher/cmd
-go build -o watcher
+go install github.com/NolikTop/watcher@latest
 ```
 
 ## Запуск
