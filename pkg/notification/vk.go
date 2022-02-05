@@ -41,11 +41,12 @@ func (v *Vk) GetName() string {
 	return v.name
 }
 
-func (v *Vk) NotifyServerWentDown(server server.Server) error {
+func (v *Vk) NotifyServerWentDown(server server.Server, err error) error {
 	message := fmt.Sprintf(
-		`Сервер %s упал.
+		`Сервер %s упал. 
+Причина: %s
 Призываю %s`,
-		server.GetFormattedName(), server.GetMentionsText(),
+		server.GetFormattedName(), err.Error(), server.GetMentionsText(),
 	)
 
 	return v.sendMessage(message)

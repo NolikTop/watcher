@@ -31,6 +31,9 @@ func (s *RconServer) Init(data map[string]interface{}) error {
 func (s *RconServer) CheckConnection() (err error) {
 	if s.conn == nil {
 		s.conn, err = rcon.NewConnection(s.serverAddr, s.password)
+		if err != nil {
+			return err
+		}
 	}
 
 	_, err = s.conn.SendCommand(s.command)

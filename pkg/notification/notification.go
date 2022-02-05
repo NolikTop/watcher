@@ -26,11 +26,11 @@ func Add(notificationMethod Method) error {
 	return nil
 }
 
-func ServerWentDown(serv server.Server) {
+func ServerWentDown(serv server.Server, err error) {
 	for _, chat := range serv.GetChats() {
 		method := methods[chat]
 
-		err := method.NotifyServerWentDown(serv)
+		err := method.NotifyServerWentDown(serv, err)
 		if err != nil {
 			log.Error(err)
 		}

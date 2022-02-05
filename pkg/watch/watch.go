@@ -16,7 +16,7 @@ func Watch(serv server.Server) {
 
 		if serv.IsMarkedAsWorking() {
 			if err != nil {
-				serverWentDown(serv)
+				serverWentDown(serv, err)
 			}
 			time.Sleep(time.Duration(timeout) * time.Second)
 		} else {
@@ -38,10 +38,10 @@ func shouldReportAgain(server server.Server) bool {
 	return server.GetOffTime()&0b111 == 0b111 && (server.GetOffTime() < 30 || rand.Intn(4) == 1)
 }
 
-func serverWentDown(server server.Server) {
+func serverWentDown(server server.Server, err error) {
 	server.MarkIsWorking(false)
-	log.WithField("server", server.GetFormattedName()).Info("Server went down")
-	notification.ServerWentDown(server)
+	log.WithField("server", server.GetFormattedName()).WithField("error", err).Info("Server went down")
+	notification.ServerWentDown(server, err)
 }
 
 func serverStartedUp(server server.Server) {

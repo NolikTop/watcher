@@ -7,7 +7,7 @@ type Method interface {
 
 	Init(name string, data map[string]interface{}) error
 
-	NotifyServerWentDown(server server.Server) error
+	NotifyServerWentDown(server server.Server, err error) error
 	NotifyServerStillIsDown(server server.Server) error
 	NotifyServerIsUp(server server.Server) error
 }

@@ -5,7 +5,7 @@ Watcher следит за указанными ему серверами. Есл
 Watcher умеет следить за **tcp**, **udp**, **rcon**, **raknet**, **minecraft**, **http** серверами.
 
 ![messages from watcher](watcher_is_watching_you.png)
----
+--
 
 ## Установка
 
