@@ -39,6 +39,7 @@
       "chats": ["minecraft", "web"],
       "mentions_text": "@online",
       "data": {
+        "command": "some_command",
         "password": "abcdef"
       }
     },
