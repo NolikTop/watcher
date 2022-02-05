@@ -26,7 +26,7 @@ go build -o watcher
 ## Запуск
 
 ```shell script
-./watch -config=путь/до/конфига.json
+./watcher -config=путь/до/конфига.json
 ```
 
 ---
