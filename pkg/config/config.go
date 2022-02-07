@@ -2,23 +2,23 @@ package config
 
 // RawConfig существует только для проверки на наличие required полей в конфиге
 type RawConfig struct {
-	NotificationMethods []*RawNotificationMethodConfig `json:"notification_methods"`
-	Servers             []*RawServerConfig             `json:"servers"`
+	Chats   []*RawChatConfig   `json:"chats"`
+	Servers []*RawServerConfig `json:"servers"`
 }
 
 type Config struct {
-	NotificationMethods []*NotificationMethodConfig
-	Servers             []*ServerConfig
+	Chats   []*ChatConfig
+	Servers []*ServerConfig
 }
 
-// RawNotificationMethodConfig существует только для проверки на наличие required полей в конфиге
-type RawNotificationMethodConfig struct {
+// RawChatConfig существует только для проверки на наличие required полей в конфиге
+type RawChatConfig struct {
 	Name   *string                 `json:"name"`
 	Method *string                 `json:"method"`
 	Data   *map[string]interface{} `json:"data"`
 }
 
-type NotificationMethodConfig struct {
+type ChatConfig struct {
 	Name   string
 	Method string
 	Data   map[string]interface{}

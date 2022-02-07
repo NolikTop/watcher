@@ -5,25 +5,25 @@ import (
 	"github.com/NolikTop/watcher/pkg/config"
 )
 
-func NewMethod(config *config.NotificationMethodConfig) (Chat, error) {
-	var notificationMethod Chat
+func NewChat(config *config.ChatConfig) (Chat, error) {
+	var cht Chat
 
-	protocol := config.Method
-	switch protocol {
+	method := config.Method
+	switch method {
 	case "vk":
-		notificationMethod = &Vk{}
+		cht = &Vk{}
 	default:
-		return nil, errUnknownMethod(protocol)
+		return nil, errUnknownMethod(method)
 	}
 
-	err := notificationMethod.Init(config.Name, config.Data)
+	err := cht.Init(config.Name, config.Data)
 	if err != nil {
 		return nil, err
 	}
 
-	return notificationMethod, nil
+	return cht, nil
 }
 
-func errUnknownMethod(serverProtocol string) error {
-	return errors.New("Unknown server \"" + serverProtocol + "\"")
+func errUnknownMethod(method string) error {
+	return errors.New("unknown method \"" + method + "\"")
 }

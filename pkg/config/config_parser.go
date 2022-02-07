@@ -24,7 +24,7 @@ func ParseConfig(configPath string) (*Config, error) {
 		return nil, err
 	}
 
-	notificationMethods, err := parseAllNotificationMethods(config)
+	chats, err := parseAllChats(config)
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +35,8 @@ func ParseConfig(configPath string) (*Config, error) {
 	}
 
 	return &Config{
-		NotificationMethods: notificationMethods,
-		Servers:             servers,
+		Chats:   chats,
+		Servers: servers,
 	}, nil
 }
 
@@ -56,7 +56,7 @@ func verifyConfigExistsAndGetContents(configPath string) ([]byte, error) {
 }
 
 func verifyAllRequiredFields(config *RawConfig) error {
-	if len(config.NotificationMethods) == 0 {
+	if len(config.Chats) == 0 {
 		return errFieldIsNotProvided("notification_methods")
 	}
 
@@ -67,49 +67,49 @@ func verifyAllRequiredFields(config *RawConfig) error {
 	return nil
 }
 
-func parseAllNotificationMethods(config *RawConfig) ([]*NotificationMethodConfig, error) {
-	notificationMethods := make([]*NotificationMethodConfig, len(config.NotificationMethods))
+func parseAllChats(config *RawConfig) ([]*ChatConfig, error) {
+	chats := make([]*ChatConfig, len(config.Chats))
 
-	for id, methodData := range config.NotificationMethods {
-		methodConfig, err := parseNotificationMethod(id, methodData)
+	for id, chatData := range config.Chats {
+		chatConfig, err := parseChat(id, chatData)
 		if err != nil {
 			return nil, err
 		}
 
-		notificationMethods[id] = methodConfig
+		chats[id] = chatConfig
 	}
 
-	return notificationMethods, nil
+	return chats, nil
 }
 
-func parseNotificationMethod(id int, methodData *RawNotificationMethodConfig) (*NotificationMethodConfig, error) {
-	err := verifyMethodRequiredFields(id, methodData)
+func parseChat(id int, chatData *RawChatConfig) (*ChatConfig, error) {
+	err := verifyChatRequiredFields(id, chatData)
 	if err != nil {
 		return nil, err
 	}
 
-	return &NotificationMethodConfig{
-		Name:   *methodData.Name,
-		Method: *methodData.Method,
-		Data:   *methodData.Data,
+	return &ChatConfig{
+		Name:   *chatData.Name,
+		Method: *chatData.Method,
+		Data:   *chatData.Data,
 	}, nil
 }
 
-func verifyMethodRequiredFields(id int, methodData *RawNotificationMethodConfig) error {
-	if methodData.Name == nil {
+func verifyChatRequiredFields(id int, chatData *RawChatConfig) error {
+	if chatData.Name == nil {
 		serverName := "#" + strconv.Itoa(id) // если имя метода не указано, то в ошибке укажем его порядковый номер в конфиге
-		return errMethodHasNotField(serverName, "name")
+		return errChatHasNotField(serverName, "name")
 	}
 
-	serverName := *methodData.Name
+	serverName := *chatData.Name
 
-	if methodData.Method == nil {
-		return errMethodHasNotField(serverName, "method")
+	if chatData.Method == nil {
+		return errChatHasNotField(serverName, "method")
 	}
 
-	if methodData.Data == nil {
+	if chatData.Data == nil {
 		data := make(map[string]interface{})
-		methodData.Data = &data
+		chatData.Data = &data
 	}
 
 	return nil

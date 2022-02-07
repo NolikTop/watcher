@@ -32,7 +32,7 @@ func New() *Watcher {
 func (w *Watcher) Load(config *config.Config) error {
 	log.Info("Loading notification chats...")
 
-	err := w.addChatsFromConfig(config.NotificationMethods)
+	err := w.addChatsFromConfig(config.Chats)
 	if err != nil {
 		return err
 	}
@@ -47,14 +47,14 @@ func (w *Watcher) Load(config *config.Config) error {
 	return nil
 }
 
-func (w *Watcher) addChatsFromConfig(methodsConfigs []*config.NotificationMethodConfig) error {
-	for _, methodConfig := range methodsConfigs {
-		method, err := chat.NewMethod(methodConfig)
+func (w *Watcher) addChatsFromConfig(chatConfigs []*config.ChatConfig) error {
+	for _, chatConfig := range chatConfigs {
+		cht, err := chat.NewChat(chatConfig)
 		if err != nil {
 			return err
 		}
 
-		err = w.AddMethod(method)
+		err = w.AddChat(cht)
 		if err != nil {
 			return err
 		}
@@ -103,18 +103,18 @@ func (w *Watcher) AddServer(serv server.Server) error {
 	return nil
 }
 
-// AddMethod не является потокобезопасным (да и вообще кому в голову может прийти добавлять методы в разных потоках?)
-func (w *Watcher) AddMethod(notificationMethod chat.Chat) error {
+// AddChat не является потокобезопасным (да и вообще кому в голову может прийти добавлять методы в разных потоках?)
+func (w *Watcher) AddChat(cht chat.Chat) error {
 	if err := w.checkCanBeChanged(); err != nil {
 		return err
 	}
 
-	name := notificationMethod.GetName()
+	name := cht.GetName()
 	if _, ok := w.chats[name]; ok {
-		return errMethodWithThisNameAlreadyExists(name)
+		return errChatWithThisNameAlreadyExists(name)
 	}
 
-	w.chats[name] = notificationMethod
+	w.chats[name] = cht
 
 	return nil
 }
@@ -130,15 +130,20 @@ func (w *Watcher) checkCanBeChanged() error {
 func (w *Watcher) Start() error {
 	w.canBeChanged.Store(false)
 
+	err := w.checkChatNamesInServers()
+	if err != nil {
+		return err
+	}
+
 	w.runAllServerWatchers()
 
 	return nil
 }
 
-func (w *Watcher) checkMethodNamesInServers(servers []server.Server) error {
+func (w *Watcher) checkChatNamesInServers() error {
 	chats := w.GetChats()
 
-	for _, serv := range servers {
+	for _, serv := range w.servers {
 		for _, chatName := range serv.GetChatNames() {
 			if _, ok := chats[chatName]; !ok {
 				return errUnknownChatName(serv.GetName(), chatName)

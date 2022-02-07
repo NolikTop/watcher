@@ -1,5 +1,5 @@
 {
-  "notification_methods": [
+  "chats": [
     {
       "name": "web",
       "method": "vk",
