@@ -5,54 +5,33 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var methods map[string]Method
+func ServerWentDown(chats chatsContainer, serv server.Server, connectionErr error) {
+	for _, chatName := range serv.GetChatNames() {
+		cht := chats.GetChat(chatName)
 
-func Init() {
-	methods = make(map[string]Method)
-}
-
-func GetMethods() map[string]Method {
-	return methods
-}
-
-func Add(notificationMethod Method) error {
-	name := notificationMethod.GetName()
-	if _, ok := methods[name]; ok {
-		return errChatWithThisNameAlreadyExists(name)
-	}
-
-	methods[name] = notificationMethod
-
-	return nil
-}
-
-func ServerWentDown(serv server.Server, err error) {
-	for _, chat := range serv.GetChats() {
-		method := methods[chat]
-
-		err := method.NotifyServerWentDown(serv, err)
+		err := cht.NotifyServerWentDown(serv, connectionErr)
 		if err != nil {
 			log.Error(err)
 		}
 	}
 }
 
-func ServerStillIsDown(serv server.Server) {
-	for _, chat := range serv.GetChats() {
-		method := methods[chat]
+func ServerStillIsDown(chats chatsContainer, serv server.Server) {
+	for _, chatName := range serv.GetChatNames() {
+		cht := chats.GetChat(chatName)
 
-		err := method.NotifyServerStillIsDown(serv)
+		err := cht.NotifyServerStillIsDown(serv)
 		if err != nil {
 			log.Error(err)
 		}
 	}
 }
 
-func ServerIsUp(serv server.Server) {
-	for _, chat := range serv.GetChats() {
-		method := methods[chat]
+func ServerIsUp(chats chatsContainer, serv server.Server) {
+	for _, chatName := range serv.GetChatNames() {
+		cht := chats.GetChat(chatName)
 
-		err := method.NotifyServerIsUp(serv)
+		err := cht.NotifyServerIsUp(serv)
 		if err != nil {
 			log.Error(err)
 		}

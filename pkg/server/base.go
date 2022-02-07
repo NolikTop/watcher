@@ -1,12 +1,14 @@
 package server
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Base struct {
 	name         string
 	serverAddr   string
 	protocol     string
-	chats        []string
+	chatsNames   []string
 	working      bool
 	offTime      uint
 	mentionsText string
@@ -33,8 +35,8 @@ func (b *Base) GetProtocol() string {
 	return b.protocol
 }
 
-func (b *Base) GetChats() []string {
-	return b.chats
+func (b *Base) GetChatNames() []string {
+	return b.chatsNames
 }
 
 func (b *Base) GetTimeout() int {

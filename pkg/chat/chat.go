@@ -1,8 +1,8 @@
-package notification
+package chat
 
 import "github.com/NolikTop/watcher/pkg/server"
 
-type Method interface {
+type Chat interface {
 	GetName() string
 
 	Init(name string, data map[string]interface{}) error

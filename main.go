@@ -3,9 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/NolikTop/watcher/pkg/config"
-	"github.com/NolikTop/watcher/pkg/notification"
-	"github.com/NolikTop/watcher/pkg/server"
-	"github.com/NolikTop/watcher/pkg/watch"
+	"github.com/NolikTop/watcher/pkg/watcher"
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,84 +20,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	notification.Init()
+	w := watcher.New()
 
-	log.Info("Loading notification methods...")
-
-	err = addNotificationMethods(c.NotificationMethods)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Info("Loading servers...")
-
-	servers, err := getServers(c.Servers)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = checkMethodNamesInServers(servers)
+	log.Info("Adding data from config...")
+	err = w.Load(c)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	log.Info("Starting watchers...")
-
-	runWatchers(servers)
-
-	log.Info("Watcher started successfully")
+	err = w.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	select {} // возможно тут стоило бы просто ловить сигнал от ос об остановке процесса.. но зачем?
-}
-
-func addNotificationMethods(methodsConfigs []*config.NotificationMethodConfig) error {
-	for _, methodConfig := range methodsConfigs {
-		method, err := notification.NewMethod(methodConfig)
-		if err != nil {
-			return err
-		}
-
-		err = notification.Add(method)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func getServers(serversConfigs []*config.ServerConfig) ([]server.Server, error) {
-	servers := make([]server.Server, len(serversConfigs))
-
-	for i, serverConfig := range serversConfigs {
-		serv, err := server.NewServer(serverConfig)
-		if err != nil {
-			return nil, err
-		}
-
-		servers[i] = serv
-	}
-
-	return servers, nil
-}
-
-func checkMethodNamesInServers(servers []server.Server) error {
-	chats := notification.GetMethods()
-
-	for _, serv := range servers {
-		for _, chatName := range serv.GetChats() {
-			if _, ok := chats[chatName]; !ok {
-				return errUnknownChatName(serv.GetName(), chatName)
-			}
-		}
-	}
-
-	return nil
-}
-
-func runWatchers(servers []server.Server) {
-	for _, serv := range servers {
-		logrus.Info("Watching for " + serv.GetFormattedName())
-		go watch.Watch(serv)
-	}
 }

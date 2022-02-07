@@ -8,7 +8,7 @@ type Server interface {
 	GetServerAddr() string
 	GetProtocol() string
 
-	GetChats() []string
+	GetChatNames() []string
 
 	GetTimeout() int
 

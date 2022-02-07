@@ -1,12 +1,12 @@
-package notification
+package chat
 
 import (
 	"errors"
 	"github.com/NolikTop/watcher/pkg/config"
 )
 
-func NewMethod(config *config.NotificationMethodConfig) (Method, error) {
-	var notificationMethod Method
+func NewMethod(config *config.NotificationMethodConfig) (Chat, error) {
+	var notificationMethod Chat
 
 	protocol := config.Method
 	switch protocol {
