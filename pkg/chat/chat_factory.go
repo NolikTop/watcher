@@ -12,6 +12,8 @@ func NewChat(config *config.ChatConfig) (Chat, error) {
 	switch method {
 	case "vk":
 		cht = &Vk{}
+	case "tg":
+		cht = &Tg{}
 	default:
 		return nil, errUnknownMethod(method)
 	}
