@@ -3,7 +3,7 @@ package chat
 import (
 	"fmt"
 	"github.com/NolikTop/watcher/pkg/server"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -90,7 +90,7 @@ func (v *Tg) sendMessage(message string) error {
 
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return err
 	}
