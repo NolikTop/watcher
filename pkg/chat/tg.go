@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-type Vk struct {
+type Tg struct {
 	name string
 
 	client *http.Client
@@ -17,7 +17,7 @@ type Vk struct {
 	accessToken string
 }
 
-func (v *Vk) Init(name string, data map[string]interface{}) error {
+func (v *Tg) Init(name string, data map[string]interface{}) error {
 	v.name = name
 
 	if chatId, ok := data["chat_id"]; ok {
@@ -37,11 +37,11 @@ func (v *Vk) Init(name string, data map[string]interface{}) error {
 	return nil
 }
 
-func (v *Vk) GetName() string {
+func (v *Tg) GetName() string {
 	return v.name
 }
 
-func (v *Vk) NotifyServerWentDown(server server.Server, err error) error {
+func (v *Tg) NotifyServerWentDown(server server.Server, err error) error {
 	message := fmt.Sprintf(
 		`Сервер %s упал. 
 Причина: %s
@@ -52,7 +52,7 @@ func (v *Vk) NotifyServerWentDown(server server.Server, err error) error {
 	return v.sendMessage(message)
 }
 
-func (v *Vk) NotifyServerStillIsDown(server server.Server) error {
+func (v *Tg) NotifyServerStillIsDown(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s все еще лежит. Прошло уже %d сек.
 Призываю %s`,
@@ -62,7 +62,7 @@ func (v *Vk) NotifyServerStillIsDown(server server.Server) error {
 	return v.sendMessage(message)
 }
 
-func (v *Vk) NotifyServerIsUp(server server.Server) error {
+func (v *Tg) NotifyServerIsUp(server server.Server) error {
 	message := fmt.Sprintf(
 		`Сервер %s встал.
 Призываю %s`,
@@ -72,18 +72,15 @@ func (v *Vk) NotifyServerIsUp(server server.Server) error {
 	return v.sendMessage(message)
 }
 
-func (v *Vk) sendMessage(message string) error {
-	request, err := http.NewRequest("GET", "https://api.vk.com/method/messages.send", nil)
+func (v *Tg) sendMessage(message string) error {
+	request, err := http.NewRequest("POST", fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", v.accessToken), nil)
 	if err != nil {
 		return err
 	}
 
 	query := request.URL.Query()
-	query.Add("v", "5.107") // todo вынести указание версии API в конфиг
 	query.Add("chat_id", strconv.Itoa(v.chatId))
-	query.Add("access_token", v.accessToken)
-	query.Add("random_id", "0")
-	query.Add("message", message)
+	query.Add("text", message)
 	request.URL.RawQuery = query.Encode()
 
 	response, err := v.client.Do(request)
@@ -106,7 +103,7 @@ func (v *Vk) sendMessage(message string) error {
 	return nil
 }
 
-func (v *Vk) getErrorFromResponse(responseBody []byte) error {
+func (v *Tg) getErrorFromResponse(responseBody []byte) error {
 	//todo
 	return nil
 }
